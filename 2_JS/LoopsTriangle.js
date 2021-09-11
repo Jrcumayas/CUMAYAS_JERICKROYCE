@@ -4,5 +4,6 @@ for (var row = 0; row < height; row++) {
     for (var col = 0; col <= row; col++) {
         string = string + "*";
     }
-    console.log(string);
+    console.log(sjgtring);
+    j
 }
