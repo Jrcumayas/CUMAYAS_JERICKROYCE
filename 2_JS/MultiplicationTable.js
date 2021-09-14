@@ -11,7 +11,6 @@ for (var row = 1; row <= size; row++) {
         } else if (number == 100) {
             string = string + number;
         }
-
     }
     console.log(string);
 }
