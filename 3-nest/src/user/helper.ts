@@ -67,8 +67,7 @@ export class Helper {
 
   static validBodyPut(body: any): { valid: boolean; data: string } {
     try {
-      var bodyValidation: { valid: boolean; data: string } =
-        this.validBody(body);
+      var bodyValidation: { valid: boolean; data: string } = this.validBody(body);
       if (bodyValidation.valid) {
         var keys: Array<string> = Helper.describeClass(User);
         keys = Helper.removeItemOnce(keys, "id");

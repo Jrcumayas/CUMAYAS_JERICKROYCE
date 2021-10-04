@@ -38,54 +38,6 @@ export class User {
 
     }
 
-    checkTypeOfValues(){
-        var num = 1;
-        var string = "string";
-        if((typeof this.idNumber === typeof num) && (typeof this.firstName === typeof string) && (typeof this.lastName === typeof string)&& (typeof this.age === typeof num) && 
-            (typeof this.address === typeof string) && (typeof this.email === typeof string) && (typeof this.password === typeof string)){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-*/
-    compareValues(user: User){
-        if((this.name !== user.name) && (this.age !== user.age) && (this.email !== user.email) && (this.password !== user.password)){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-
-    patchValues(user: User){
-        if(!(this.name)){
-            this.name = user.name;
-        }
-        if(!(this.age)){
-            this.age = user.age;
-        }
-        if(!(this.email)){
-            this.email = user.email;
-        }
-        if(!(this.password)){
-            this.password = user.password;
-        }
-    }
-
-    checkLoginDetails(user: any): boolean{
-        if(this.email === user.email && this.password === user.password){
-            return true;
-        }
-        else if (this.email === user.email && !(this.password === user.password)){
-
-        }
-        else{
-            return false;
-        }
-    }
-/*
     checkUserDetails(term: string){
         var firstName: string = this.firstName.toUpperCase();
         var lastName: string = this.lastName.toUpperCase();
@@ -119,40 +71,29 @@ export class User {
         this.email = email;
         this.password = password;
     }
-/*
-    login(userLogin) {
-        try {
-          if (this.email === userLogin.email && this.password === userLogin.password) {
-            return 1;
-          } 
-          else if (!(this.email === userLogin.email) && this.password === userLogin.password){
-            return 2;
-          }
-          else if (this.email === userLogin.email && !(this.password === userLogin.password)){
-            return 3;
-          }
-          else {
-            return 4;
-          }
-        } catch (error) {
-          return { success: false, data: error.message };
-        }
-      }
 
-      */
-    login(userLogin): CRUDReturn {
+    login(userLogin: User) {
         try {
           if (this.email === userLogin.email && this.password === userLogin.password) {
-            return { success: true, data: this.toJson() };
+            return {
+                success: true,
+                data: this.toJson()
+            }
           } 
-          else if (!(this.email === userLogin.email) && this.password === userLogin.password) {
-            throw new Error(`${this.email} login fail, email does not match`);
-          } 
-          else if (this.email === userLogin.email && !(this.password === userLogin.password)) {
-            throw new Error(`${this.email} login fail, password does not match`);
-          } 
+          else if (this.email !== userLogin.email && this.password === userLogin.password){
+              return {
+                  success: false,
+                  data: ("Invalid email.")
+              }
+          }
+          else if (this.email === userLogin.email && this.password !== userLogin.email){
+              return {
+                  success: false,
+                  data: ("Invalid password.")
+              }
+          }
           else {
-            throw new Error(`${this.email} login fail, invalid email and password`);
+            throw new Error(`${this.email} login fail, password does not match`);
           }
         } catch (error) {
           return { success: false, data: error.message };
@@ -197,6 +138,50 @@ export class User {
         var sample: string = "string";
         if((typeof userLogin.email == typeof sample) && (typeof userLogin.password == typeof sample)){
             return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    checkTypeOfValuesPatch(){
+        var num = 1;
+        var string = "string";
+        if(typeof this.name == typeof string){
+
+        }
+    }
+
+    compareValues(user: User){
+        if((this.name !== user.name) && (this.email !== user.email) && (this.password !== user.password)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    patchValues(user: User){
+        if(user.name != undefined){
+            this.name = user.name;
+        }
+        if(user.age != undefined){
+            this.age = user.age;
+        }
+        if(user.email != undefined){
+            this.email = user.email;
+        }
+        if(user.password != undefined){
+            this.password = user.password;
+        }
+    }
+
+    checkLoginDetails(user: any): boolean{
+        if(this.email === user.email && this.password === user.password){
+            return true;
+        }
+        else if (this.email === user.email && !(this.password === user.password)){
+
         }
         else{
             return false;
