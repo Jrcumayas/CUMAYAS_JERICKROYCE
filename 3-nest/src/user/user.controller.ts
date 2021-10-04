@@ -25,7 +25,7 @@ export class UserController {
     replaceAllValues(@Body() body:any, @Param (`id`) id: string){
         return this.userService.replaceAllValues(body,id);
     }
-/*
+
     @Patch(`/:id`)
     patchValue(@Body() body:any, @Param(`id`) id: string){
         return this.userService.patchValue(body,id);
@@ -35,7 +35,7 @@ export class UserController {
     deleteUser(@Param (`id`) id: string){
         return this.userService.deleteUser(id);
     }
-*/
+
     @Post(`/login`)
     loginUser(@Body() body: any){
         return this.userService.loginUser(body);

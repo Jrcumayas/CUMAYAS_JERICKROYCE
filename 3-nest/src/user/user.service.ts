@@ -90,6 +90,7 @@ export class UserService {
 
     replaceAllValues(user:any, id:string): CRUDReturn{
         var newUser: User;
+        var temp: User;
         if(this.users.has(id)){
             newUser = new User(user?.name, user?.age, user?.email, user?.password);
             newUser.id = id;
@@ -112,73 +113,72 @@ export class UserService {
                 };
             }  
             else{
-                for (const [key, userEntry] of this.users.entries()){
-                    if(userEntry.compareValues(newUser) == true){
-                        this.users.set(id, newUser);
-                        return {
-                            success: true,
-                            data: newUser.toJson()
-                        };
-                    }
-                    else{
-                        return {
-                            success: false,
-                            data: ("Error Encountered: All information must be changed. Change all values. Make sure that all needed information are filled in.")
-                        };
-                    } 
+                temp = this.users.get(id);
+                if(temp.compareValues(newUser)){
+                    this.users.set(id, newUser);
+                    return {
+                        success: true,
+                        data: newUser.toJson()
+                    };
                 }
-            }
+            } 
         }
         return {
             success: false,
             data: ("ID not found!")
         };
     }
+    
 
     patchValue(user: any, id: string){
         var patchUser: User;
-        for (const [key, userEntry] of this.users.entries()){
-            if(userEntry.matches(id)){
-                patchUser = new User (user?.name, user?.age, user?.email, user?.password);   
-                if(patchUser.checkTypeOfAttributes()){
-                    this.users.set(userEntry.id, patchUser);
-                    return {
-                        success: true,
-                        data: patchUser.toJson()
-                    };
-                }
-                else{
-                    return {
-                        success: true,
-                        data: (`Error Encountered:ID Number and Age should be numbers and not string.First Name, Last Name, Address, Email, and Password<br> should be strings not numbers.`)
-                    };
-                }
-            }
+        var temp: User;
+        if(this.users.has(id)){
+            patchUser = new User (user?.name, user?.age, user?.email, user?.password);
+            patchUser.id = id;
+            temp = this.users.get(id);
+            this.users.set(id, temp);
+            return {
+                success: true,
+                data: this.users.get(id)
+            };
         }
         return{
             success: false,
             data: ("ID not found")
         };
-        
     }
 
     deleteUser(id: string){
         var editId: User;
         if(this.users.has(id)){
             this.users.delete(id);
-            return `User ID Number ${id} has been succesfully deleted.`;
+            return {
+                success: true,
+                data: ("Account succesfully deleted.")
+            };
         }
         else{
-            return `Error Encountered:<br>- User ID Number ${id} does not exit.`;
+            return {
+                success: false,
+                data: ("ID does not exist.")
+            };
         }
     }
 
     loginUser(userLogin: any){
         for (const [key,userEntry] of this.users.entries()) {
-            if(userEntry.login(userLogin).success == true){
-                return userEntry.login(userLogin);
-            }  
+            if(userEntry.login(userLogin)){
+                return {
+                    success: true,
+                    data: userEntry.toJson()
+                };
+            }
         }
+        return {
+            success: false,
+            data: ("Invalid account details.")
+        };
     }
 
     searchTerm(term: string){

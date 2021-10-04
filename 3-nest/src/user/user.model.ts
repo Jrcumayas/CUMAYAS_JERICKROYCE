@@ -119,20 +119,46 @@ export class User {
         this.email = email;
         this.password = password;
     }
-
-    login(userLogin): CRUDReturn {
+/*
+    login(userLogin) {
         try {
-          if (this.password === userLogin.password) {
-            return { success: true, data: this.toJson() };
-          } else {
-            throw new Error(`${this.email} login fail, password does not match`);
+          if (this.email === userLogin.email && this.password === userLogin.password) {
+            return 1;
+          } 
+          else if (!(this.email === userLogin.email) && this.password === userLogin.password){
+            return 2;
+          }
+          else if (this.email === userLogin.email && !(this.password === userLogin.password)){
+            return 3;
+          }
+          else {
+            return 4;
           }
         } catch (error) {
           return { success: false, data: error.message };
         }
       }
 
-    
+      */
+    login(userLogin): CRUDReturn {
+        try {
+          if (this.email === userLogin.email && this.password === userLogin.password) {
+            return { success: true, data: this.toJson() };
+          } 
+          else if (!(this.email === userLogin.email) && this.password === userLogin.password) {
+            throw new Error(`${this.email} login fail, email does not match`);
+          } 
+          else if (this.email === userLogin.email && !(this.password === userLogin.password)) {
+            throw new Error(`${this.email} login fail, password does not match`);
+          } 
+          else {
+            throw new Error(`${this.email} login fail, invalid email and password`);
+          }
+        } catch (error) {
+          return { success: false, data: error.message };
+        }
+    }
+
     matches(term: string): boolean{
         var temp_Id: string = this.id.toUpperCase();
         var temp_Name: string = this.name.toUpperCase();
