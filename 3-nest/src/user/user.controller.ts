@@ -43,7 +43,7 @@ export class UserController {
 
     @Get(`/search/:term`)
     searchTerm(@Param (`term`) term: string){
-        return this.userService.searchTerm(term);
+        return this.userService.checkTermPresent(term);
     }
 
 }

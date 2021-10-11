@@ -1,6 +1,5 @@
 import { User } from './user.model';
 import { v4 as uid } from 'uuid';
-
 export class Helper {
   //returns an array of attributes as defined in the class
   static describeClass(typeOfClass: any): Array<any> {
@@ -43,15 +42,15 @@ export class Helper {
     try {
       var keys: Array<string> = Helper.describeClass(User);
       var types: Map<string, string> = new Map<string, string>();
-      types.set('name', typeof '');
+      types.set('name', typeof "");
       types.set('age', typeof 0);
-      types.set('email', typeof '');
-      types.set('password', typeof '');
+      types.set('email', typeof "");
+      types.set('password', typeof "");
       for (const key of Object.keys(body)) {
         if (!keys.includes(`${key}`) && typeof body[key] != types.get(key)) {
           return { valid: false, data: `${key} is not a valid attribute` };
         }
-        if (typeof body[key] != types.get(key)) {
+        if (typeof(types.get(key)) != typeof body[key]) {
           throw new Error(
             `${key} with value ${body[key]} with type ${typeof body[
               key
@@ -67,7 +66,8 @@ export class Helper {
 
   static validBodyPut(body: any): { valid: boolean; data: string } {
     try {
-      var bodyValidation: { valid: boolean; data: string } = this.validBody(body);
+      var bodyValidation: { valid: boolean; data: string } =
+        this.validBody(body);
       if (bodyValidation.valid) {
         var keys: Array<string> = Helper.describeClass(User);
         keys = Helper.removeItemOnce(keys, "id");

@@ -1,8 +1,11 @@
 import { stringify } from "querystring";
 import { CRUDReturn } from './crud_return.interface';
 import { Helper } from './helper'
+import * as admin from 'firebase-admin';
+
 
 export class User {
+    private DB = admin.firestore();
 /*
     private idNumber: number;
     private firstName: string;
@@ -72,33 +75,41 @@ export class User {
         this.password = password;
     }
 
-    login(userLogin: User) {
-        try {
-          if (this.email === userLogin.email && this.password === userLogin.password) {
-            return {
-                success: true,
-                data: this.toJson()
+    async login(userLogin: User): Promise<CRUDReturn> {
+        try{
+        var dbData: any = await this.DB.collection("users").get();
+        dbData.forEach((doc) => {
+            if (doc.exists){
+                var data = doc.data();
+                if(dbData.data()['email'] == userLogin.email && data['password'] == userLogin.password){
+                    return {
+                        success: true,
+                        data: data['name']
+                    }
+                }
+                else if (this.email !== userLogin.email && this.password === userLogin.password){
+                    return {
+                        success: false,
+                        data: ("Invalid email.")
+                    }
+                }
+                else if (this.email === userLogin.email && this.password !== userLogin.email){
+                    return {
+                        success: false,
+                        data: ("Invalid password.")
+                    }
+                }
+                else {
+                  throw new Error(`${this.email} login fail, password does not match`);
+                }
             }
-          } 
-          else if (this.email !== userLogin.email && this.password === userLogin.password){
-              return {
-                  success: false,
-                  data: ("Invalid email.")
-              }
-          }
-          else if (this.email === userLogin.email && this.password !== userLogin.email){
-              return {
-                  success: false,
-                  data: ("Invalid password.")
-              }
-          }
-          else {
-            throw new Error(`${this.email} login fail, password does not match`);
-          }
-        } catch (error) {
-          return { success: false, data: error.message };
-        }
+        }); }
+        catch (error) {
+            return { success: false, data: error.message };
     }
+         
+}
+    
 
     matches(term: string): boolean{
         var temp_Id: string = this.id.toUpperCase();
@@ -123,10 +134,21 @@ export class User {
         }
     }
 
-    checkTypeOfAttributes(){
+    checkTypeOfAttributesPut(){
         var num:number = 1;
         var sample:string = "string";
         if((typeof this.age == typeof num) && (typeof this.id == typeof sample) && (typeof this.name == typeof sample) && (typeof this.email == typeof sample) && (typeof this.password == typeof sample)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    checkTypeOfAttributes(){
+        var num:number = 1;
+        var sample:string = "string";
+        if((typeof this.age == typeof num) || (typeof this.id == typeof sample) && (typeof this.name == typeof sample) && (typeof this.email == typeof sample) && (typeof this.password == typeof sample)){
             return true;
         }
         else{
@@ -152,7 +174,7 @@ export class User {
         }
     }
 
-    compareValues(user: User){
+    async compareValues(user: User){
         if((this.name !== user.name) && (this.email !== user.email) && (this.password !== user.password)){
             return true;
         }
