@@ -1,0 +1,17 @@
+<div class="mainContent">
+    <div class=" login ">
+        <form class="inputs" style="color:white" [formGroup]="loginForm" (ngSubmit)="login()">
+            <div class=" inputs " style="color:white ">
+                <img src="assets/logo.png">
+                <label for=" EMAIL ">Email</label>
+                <input type="email " name="EMAIL " value="" formControlName="fCEmail" />
+                <label for="password ">Password</label>
+                <input type="password" name="PASSWORD" value="" formControlName="fCPassword" />
+            </div>
+            <div>
+                <button name="registerButton" (click)="register()">REGISTER</button>
+                <button name="loginButton" type="submit">LOGIN</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -33,24 +33,26 @@ export class Helper {
       });
       return result;
     } catch (error) {
-      console.log(error);
+      console.log("Helper.populate error");
+      console.log(error.message);
       return null;
     }
   }
 
   static validBody(body: any): { valid: boolean; data: string } {
     try {
-      var keys: Array<string> = Helper.describeClass(User);
+    //   var keys: Array<string> = Helper.describeClass(User);
+    var keys: Array<string> = ['name', 'age', 'email', 'password'];
       var types: Map<string, string> = new Map<string, string>();
-      types.set('name', typeof "");
+      types.set('name', typeof '');
       types.set('age', typeof 0);
-      types.set('email', typeof "");
-      types.set('password', typeof "");
+      types.set('email', typeof '');
+      types.set('password', typeof '');
       for (const key of Object.keys(body)) {
         if (!keys.includes(`${key}`) && typeof body[key] != types.get(key)) {
           return { valid: false, data: `${key} is not a valid attribute` };
         }
-        if (typeof(types.get(key)) != typeof body[key]) {
+        if (typeof body[key] != types.get(key)) {
           throw new Error(
             `${key} with value ${body[key]} with type ${typeof body[
               key
@@ -60,7 +62,7 @@ export class Helper {
       }
       return { valid: true, data: null };
     } catch (error) {
-      return { valid: false, data: error.message };
+      return { valid: false, data: error.message, };
     }
   }
 
@@ -77,12 +79,12 @@ export class Helper {
           }
         }
         if (keys.length > 0) {
-          throw Error(`Payload is missing ${keys}`);
+          throw new Error(`Payload is missing ${keys}`);
         }
         return { valid: true, data: null };
-      } else throw Error(bodyValidation.data);
+      } else throw new Error(bodyValidation.data);
     } catch (error) {
-      return { valid: false, data: error.message };
+      return { valid: false, data: error.message, };
     }
   }
 }

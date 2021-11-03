@@ -1,0 +1,28 @@
+<div class="mainContent">
+    <div class=" login ">
+        <div class=" inputs " style="color:white ">
+            <table>
+                <tr>
+                    <label>Search</label>
+                    <input type="text" name="searchBox" value="" />
+                    <button name="showAllButton" (click)="getAll()">SHOW ALL USERS</button>
+                    <button name="logoutButton" (click)="nav('login')">LOGOUT</button>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td><label>No.</label></td>
+                    <td><label>Name</label></td>
+                    <td><label>Email</label></td>
+                    <td><label>Age</label></td>
+                </tr>
+                <tr *ngFor="let user of results; let i=index ">
+                    <td>{{i+1}}</td>
+                    <td>{{user.name}}</td>
+                    <td>{{user.email}}</td>
+                    <td>{{user.age}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

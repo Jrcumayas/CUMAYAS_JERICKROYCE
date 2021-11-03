@@ -1,0 +1,61 @@
+        .mainContent {
+            height: 100vh;
+            width: 100vw;
+            display: grid;
+            justify-content: center;
+            align-content: center;
+            font-family: 'Times New Roman';
+            background-image: linear-gradient(rgba(255, 255, 255, 0.164), rgba(255, 255, 255, 0.164)), url(/assets/background2.jpg);
+            background-repeat: no-repeat;
+            background-size: 14.7in;
+            .login {
+                background-color: rgb(31, 29, 29);
+                width: 450px;
+                border-width: 5px;
+                border-radius: 10px;
+                border-style: double;
+                border-color: rgb(75, 12, 12);
+                padding: 24px;
+                padding-bottom: 14px;
+                padding-top: 10px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                .inputs {
+                    display: flex;
+                    flex-direction: column;
+                    height: 450px;
+                    label {
+                        margin-top: 10px;
+                        text-align: center;
+                        font-size: 21px;
+                    }
+                    input {
+                        height: 1cm;
+                        border-radius: 10px;
+                        text-align: center;
+                        font-size: 20px;
+                    }
+                }
+                .actions {
+                    margin-top: 1px;
+                    display: flex;
+                    flex-direction: row;
+                }
+                button {
+                    height: 40px;
+                    width: 50%;
+                    background-color: rgb(87, 14, 14);
+                    color: white;
+                    border-radius: 10px;
+                    margin-top: 20px;
+                    border-width: 5px;
+                    border-color: rgb(82, 81, 81);
+                    font-size: 18px;
+                }
+                button:hover {
+                    background-color: rgb(104, 31, 31);
+                    color: white;
+                }
+            }
+        }

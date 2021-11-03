@@ -4,6 +4,8 @@ import { Helper } from './helper';
 import { User } from './user.model';
 import * as admin from 'firebase-admin';
 import { resourceLimits } from 'worker_threads';
+import { doc } from 'prettier';
+import { disconnect } from 'process';
 const DEBUG: boolean = true;
 
 @Injectable()
@@ -84,32 +86,28 @@ export class UserService {
     async inputNewUser(user: any): Promise<CRUDReturn>{
         var newUser:  User;
         try{
-            newUser = new User(user?.name, user?.age, user?.email, user?.password);
-            if((newUser.checkAttributes() == false)){
-                return {
-                    success: false,
-                    data: ("One or more of the attributes are missing.")
-            };
-            }
-            else if((newUser.checkTypeOfAttributesPut() == false)){
-                return {
-                    success: false,
-                    data: ("Attributes of the wrong type.")
-                };
-            }
-            else if(await (await this.checkTermPresent(newUser.toJson().email)).success == true){
-                return {
-                    success: false,
-                    data: ("Email has already been used.")
-                };
-            }  
-            else{
-                if (this.saveToDB(newUser)){
-                    if (DEBUG) this.logAllUsers();
+            if(Helper.validBody(user)){
+                newUser = new User(user?.name, user?.age, user?.email, user?.password);
+                if(await (await this.checkTermPresent(newUser.toJson().email)).success == true){
                     return {
-                        success: true,
-                        data: newUser.toJson()
+                        success: false,
+                        data: ("Email has already been used.")
                     };
+                }  
+                else{
+                    if (this.saveToDB(newUser)){
+                        if (DEBUG) this.logAllUsers();
+                        return {
+                            success: true,
+                            data: ("Account created succesfully!")
+                        };
+                    }
+                }
+            }
+            else{
+                return {
+                    success: false,
+                    data: ("Please make sure that attributes and inputs are correct.")
                 }
             }
         } catch(error){
@@ -208,7 +206,7 @@ export class UserService {
             else{
                 return {
                     sucess: false,
-                    data: "Inavlid attributes."
+                    data: "Invalid attributes."
                 }
             }
                         
@@ -248,22 +246,29 @@ export class UserService {
 
     async loginUser(userLogin: any){
         var temp: User = new User (userLogin?.name, userLogin?.age, userLogin?.email, userLogin?.password);
-        var dbData = await this.DB.collection("users").get();
-        try {
-            dbData.forEach((doc) => {
-                if (doc.exists){
-                    var data = doc.data();
-                    if(data['email'] === temp.toJson().email && data['password'] === temp.toJson().password){
+        var dbData = await this.DB.collection("users");
+        const snapshot = await dbData.where('email', '==', temp.toJson().email).get();
+        try{
+        const data = await this.DB.collection("users").get();
+            if(!(snapshot.empty)){
+                for (const doc of snapshot.docs) {
+                    if(doc.data()['password'] === temp.toJson().password){
                         return {
                             success: true,
-                            data: "Succesful Login."
+                            data: ("Succesful Login!")
                         }
                     }
                 }
-            });
-            return {
-                success: false,
-                data: "Invalid Login details."
+                return{
+                    success: false,
+                    data: ("Invalid email or password.")
+                }
+            } 
+            else {
+                return{
+                    success: false,
+                    data: "Account details are not in database."
+                }
             }
         } catch (error){
             return {
@@ -271,9 +276,8 @@ export class UserService {
                 data: error.message
             }
         }
-        
     }
-
+    
     async searchTerm(term: string){
         var results = [];
         var matches =[];
